@@ -4,12 +4,16 @@
   "private": true,
   "dependencies": {
     "@material/react-button": "^0.12.1",
+    "@urbica/react-map-gl": "^1.6.0",
+    "@urbica/react-map-gl-cluster": "^0.1.0",
     "dotenv": "^8.0.0",
+    "mapbox-gl": "^1.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-flexbox-grid": "^2.1.2",
     "react-map-gl": "^4.1.2",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "supercluster": "^6.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

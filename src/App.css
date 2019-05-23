@@ -56,26 +56,95 @@
 }
 
 ul.quakelist {
+  position: relative;
+  font-size: 1rem;
   font-family: 'Product Sans';
   padding: 0;
   margin: 0;
+  margin-right: 1em;
   list-style: none;
   max-height: calc(100vh);
   overflow-y: scroll;
 }
 
 ul.quakelist li {
-  padding: 1em 1em;
+  position: relative;
+  background-color: #fff;
+  /* padding: 1em 1em; */
   margin: 0.5em;
   border-radius: 0.4em;
   margin-top: 1em;
   box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28);
+  overflow: hidden;
+  z-index: 1;
 }
 
+
+ul.quakelist .myGrid{
+  display: grid;
+  grid-template-columns: 90px minmax(100px,auto);
+
+
+}
+hr {
+  border: none;
+  height: 1px;
+  background-color: rgba(204, 204, 204, 0.632);
+}
+@keyframes animate {
+  0%{
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  90%{
+    transform: scale(2);
+    opacity: 0;
+  }
+  100%{
+    opacity: 0;
+  }
+}
+
+
+
+ul.quakelist .magnitude-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+ul.quakelist .magnitude-circle {
+  position: relative;
+  width: 3.5em;
+  height: 3.5em;
+  display: flex;
+  background-color: red;
+  border-radius: 100%;
+  align-items: center;
+  justify-content: center;
+
+}
+
+ul.quakelist .magnitude-circle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  border-radius: 50%;
+  animation: animate 1.5s linear infinite;
+  z-index: -1;
+}
 ul.quakelist .magnitude {
-  font-size: 2em;
+  font-size: 1.6em;
   font-variant-numeric: tabular-nums;
-  padding-right: 0.5em;
+  color: #fff;
+
 }
 
 ul.quakelist .title {
@@ -83,7 +152,7 @@ ul.quakelist .title {
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-  width: 80%;
+  width: 100%;
   display: inline-block;
 }
 
@@ -95,6 +164,7 @@ ul.quakelist .distance {
 
 ul.quakelist .time {
 
+  width: 80%;
 }
 ul.quakelist .distance .locationIcon {
   margin-left: 0.5em;
@@ -102,6 +172,7 @@ ul.quakelist .distance .locationIcon {
 
 .search-bar-container {
   z-index: 100;
+  font-size: 1rem;
   width: 100%;
   padding-top: 1em;
   position: relative;
@@ -130,7 +201,6 @@ ul.quakelist .distance .locationIcon {
   border: 1px solid #d4d4d4;
   border-bottom: none;
   border-top: none;
-  z-index: 99;
   /*position the autocomplete items to be the same width as the container:*/
   top: 100%;
   margin-top: 0.7em;

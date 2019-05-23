@@ -32,11 +32,21 @@ class SearchBar extends Component {
     e.target.parentElement.previousSibling.value = selectedPlace.matching_place_name || selectedPlace.place_name;
     e.target.parentElement.style.visibility = "hidden";
     console.log("Selected:",selectedPlace);
-    let url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-01-01&latitude=${selectedPlace.center[1]}&longitude=${selectedPlace.center[0]}&maxradiuskm=600`;
+
+    this.props.updateViewPort({
+      ...this.props.viewport,
+      longitude : selectedPlace.center[0]+4,
+      latitude: selectedPlace.center[1],
+      zoom: 6
+    })
+
+    let url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-01-01&minlatitude=${selectedPlace.bbox[1]}&minlongitude=${selectedPlace.bbox[0]}&maxlatitude=${selectedPlace.bbox[3]}&maxlongitude=${selectedPlace.bbox[2]}&limit=50&orderby=time`;
     fetch(url).then((response) => response.json()).then((data) => {
 			console.log(data);
       this.props.updateFetchedData(data.features);
-    });
+    }).catch(error => console.error(error));
+
+
     this.props.updateSelectedRegion(this.state.suggestions.filter(sug => sug.id === id));
 
 
