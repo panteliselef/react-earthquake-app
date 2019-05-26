@@ -1,14 +1,13 @@
-// TODO: replace maxradious with rectangle shape and use bbox
-// TODO: add orderby in usgs request
-
+//TODO: add support for localStorage
 import React, { Component } from 'react';
 import ReactMapGL, { Marker, Popup, NavigationControl } from '@urbica/react-map-gl';
 import Cluster from '@urbica/react-map-gl-cluster';
-
+import magnitudeColors from '../src/Tools/magnitudeColors';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import QuakeList from '../src/Components/QuakeList';
 import SearchBar from '../src/Components/SearchBar';
 import '@material/react-button/dist/button.min.css';
+import UserLocation from '../src/Components/UserLocation';
 import '../src/fonts.css';
 import '../src/App.css';
 import { isFor } from '@babel/types';
@@ -17,16 +16,13 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			currLocation: {
-				latitude: 45.4221,
-				longitude: -75.6903
-			},
+			currLocation: null,
 			viewport: {
 				latitude: 45.4221,
 				longitude: -75.6903,
 				width: '100%',
 				height: '100vh',
-				zoom: 6
+				zoom: 2
 			},
 			fetchedData: [],
 			selectedQuake: null,
@@ -35,24 +31,20 @@ class App extends Component {
 		this.url =
 			'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-05-13&latitude=35.3400127&longitude=25.1343475&maxradiuskm=500';
 
-		this.style = {
-			width: '20px',
-			height: '20px',
-			color: '#fff',
-			background: '#1978c8',
-			borderRadius: '20px',
-			textAlign: 'center'
-		};
 		this.ClusterMarker = ({ longitude, latitude, pointCount }) => (
 			<Marker longitude={longitude} latitude={latitude}>
-				<div style={{ ...this.style, background: '#f28a25' }}>{pointCount}</div>
+				<div className="cluster-marker">{pointCount}</div>
 			</Marker>
 		);
 	}
 
+	updateUserLocation = (currLocation) => {
+		this.setState({ currLocation: currLocation });
+	};
+
 	updateSelectedQuake = (quake) => {
-		this.setState({selectedQuake:quake});
-	}
+		this.setState({ selectedQuake: quake });
+	};
 
 	updateViewPort = (viewport) => {
 		this.setState({ viewport: viewport });
@@ -70,26 +62,11 @@ class App extends Component {
 			console.log(data);
 			this.setState({ fetchedData: data.features });
 		});
-		this.getLocation();
 	}
-
-	getLocation = () => {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition((position) => {
-				console.log(position.coords);
-				let v = {
-					latitude: position.coords.latitude,
-					longitude: position.coords.longitude,
-					width: '100%',
-					height: '100vh',
-					zoom: 6
-				};
-				this.setState({ viewport: v });
-				this.setState({ currLocation: position.coords });
-			});
-		} else {
-			console.error('Geolocation is not supported');
-		}
+	matchColorToMag = (mag) => {
+		return magnitudeColors.filter((item) => {
+			return item.minValue <= mag && item.maxValue > mag;
+		});
 	};
 
 	render() {
@@ -106,9 +83,14 @@ class App extends Component {
 						this.setState({ viewport: viewport });
 					}}
 				>
-					<Marker latitude={this.state.currLocation.latitude} longitude={this.state.currLocation.longitude}>
-						<div className="marker-btn mylocation" />
-					</Marker>
+					{this.state.currLocation != null ? (
+						<Marker
+							latitude={this.state.currLocation.latitude}
+							longitude={this.state.currLocation.longitude}
+						>
+							<div className="marker-btn mylocation" />
+						</Marker>
+					) : null}
 
 					<Cluster radius={40} extent={512} nodeSize={64} component={this.ClusterMarker}>
 						{this.state.fetchedData.map((quake) => (
@@ -119,6 +101,11 @@ class App extends Component {
 							>
 								<div
 									className="marker-btn"
+									style={{
+										backgroundColor: this.matchColorToMag(quake.properties.mag)[0]
+											? this.matchColorToMag(quake.properties.mag)[0].color
+											: '#333'
+									}}
 									onClick={(e) => {
 										e.preventDefault();
 										this.setState({ selectedQuake: quake });
@@ -133,7 +120,6 @@ class App extends Component {
 							latitude={this.state.selectedQuake.geometry.coordinates[1]}
 							longitude={this.state.selectedQuake.geometry.coordinates[0]}
 							onClose={() => {
-								
 								this.setState({ selectedQuake: null });
 							}}
 						>
@@ -142,7 +128,7 @@ class App extends Component {
 					)}
 					<NavigationControl showCompass showZoom position="bottom-left" />
 					<Row>
-						<Col xs={9}>
+						<Col xs={9} md={9} sm={7}>
 							<SearchBar
 								updateFetchedData={this.updateFetchedData}
 								updateSelectedRegion={this.selectRegion}
@@ -150,8 +136,19 @@ class App extends Component {
 								viewport={this.state.viewport}
 							/>
 						</Col>
-						<Col xs={3}>
-							<QuakeList updateSelectedQuake={this.updateSelectedQuake} featureList={this.state.fetchedData} viewport={this.state.viewport} updateViewPort={this.updateViewPort} quakes={this.state.fetchedData} currLocation={this.state.currLocation} />
+						<Col xs={3} md={3} sm={5}>
+							<UserLocation
+								updateViewPort={this.updateViewPort}
+								updateUserLocation={this.updateUserLocation}
+							/>
+							<QuakeList
+								updateSelectedQuake={this.updateSelectedQuake}
+								featureList={this.state.fetchedData}
+								viewport={this.state.viewport}
+								updateViewPort={this.updateViewPort}
+								quakes={this.state.fetchedData}
+								currLocation={this.state.currLocation}
+							/>
 						</Col>
 					</Row>
 				</ReactMapGL>

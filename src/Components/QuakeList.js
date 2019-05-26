@@ -65,12 +65,15 @@ function QuakeList(props) {
 								<div className="time">{e.toLocaleString('el-GR')} </div>
 								<div className="distance">
 									<span>
-										{`${distanceInKmBetweenEarthCoordinates(
+										{(props.currLocation!=null)?
+										`${distanceInKmBetweenEarthCoordinates(
 											quake.geometry.coordinates[1],
 											quake.geometry.coordinates[0],
 											props.currLocation.latitude,
 											props.currLocation.longitude
-										).toFixed(0)} km from your location`}
+										).toFixed(0)} km from your location`
+										: '- km from your locaiton'
+										}
 									</span>
 									<img className="locationIcon" src={locationIcon} width="18px" height="18px" />
 								</div>
