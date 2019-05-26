@@ -9,7 +9,6 @@ class EarthQuakeUrl {
       ...parameters,
     }
   }
-
   getUrl() {
     let prefix = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson`;
     let properties = Object.getOwnPropertyNames(this.parameters);

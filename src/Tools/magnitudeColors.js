@@ -81,7 +81,7 @@
 // 	},
 // };
 
-var magnitudeColors = [
+const magnitudeColors = [
 	{
 		minValue: 0,
 		maxValue: 2,
@@ -116,22 +116,33 @@ var magnitudeColors = [
 		minValue: 7,
 		maxValue: 8,
 		color: '#E75F40'
-  },
-  {
+	},
+	{
 		minValue: 8,
 		maxValue: 9,
 		color: '#E13A20'
-  },
-  {
+	},
+	{
 		minValue: 9,
 		maxValue: 10,
 		color: '#D93218'
-  },
-  {
+	},
+	{
 		minValue: 10,
 		maxValue: 20,
 		color: '#C03823'
-	},
+	}
 ];
+
+export const matchColorToMag = (mag) => {
+	return magnitudeColors.filter((item) => {
+		return item.minValue <= mag && item.maxValue > mag;
+	});
+};
+
+export const hexToRgb = (hex) => {
+	let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? `rgba(${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)},0.4)` : null;
+};
 
 export default magnitudeColors;

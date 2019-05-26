@@ -1,34 +1,35 @@
 import React, { useState } from 'react';
 const UserLocation = (props) => {
+	const { dispatch, viewport } = props;
 	const [ isEnable, setEnable ] = useState(false);
-
-	const locationText = React.createRef();
-	const changeColor = (e) => {		
-		document.getElementById("locationText").style.display = 'inline';
+	const changeColor = (e) => {
+		document.getElementById('locationText').style.display = 'inline';
 		getLocation();
 	};
 
 	const getLocation = () => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition((position) => {
-				document.getElementById("locationText").style.display = 'none';
+				document.getElementById('locationText').style.display = 'none';
 				console.log(position.coords);
-				let v = {
-					latitude: position.coords.latitude,
-					longitude: position.coords.longitude,
-					width: '100%',
-					height: '100vh',
-					zoom: 6
-				};
-				props.updateUserLocation(position.coords);
-				props.updateViewPort(v);
+				dispatch({ type: 'UPDATED_USER_LOCATION', payload: position.coords });
+				dispatch({
+					type: 'UPDATED_VIEWPORT',
+					payload: {
+						...viewport,
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude,
+						zoom: 7
+					}
+				});
+
 				if (isEnable) {
-			setEnable(false);
-			document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#c3c3c3');
-		} else {
-			setEnable(true);
-			document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#35B4F6');
-		}
+					setEnable(false);
+					document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#c3c3c3');
+				} else {
+					setEnable(true);
+					document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#35B4F6');
+				}
 			});
 		} else {
 			console.error('Geolocation is not supported');
@@ -37,7 +38,12 @@ const UserLocation = (props) => {
 
 	return (
 		<div onClick={(e) => changeColor(e)} className="user-location">
-			<div>Use my Location <span id="locationText" className='loading'>loading...</span> </div>
+			<div>
+				Use my Location{' '}
+				<span id="locationText" className="loading">
+					loading...
+				</span>{' '}
+			</div>
 			<svg className="location-icon" style={{ width: '24px', height: '24px' }} viewBox="0 0 30 30">
 				<path
 					fill="#c3c3c3"

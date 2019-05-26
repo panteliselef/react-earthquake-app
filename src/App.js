@@ -1,160 +1,129 @@
-//TODO: add support for localStorage
-import React, { Component } from 'react';
+import React, { useReducer, useEffect,useState } from 'react';
 import ReactMapGL, { Marker, Popup, NavigationControl } from '@urbica/react-map-gl';
 import Cluster from '@urbica/react-map-gl-cluster';
-import magnitudeColors from '../src/Tools/magnitudeColors';
+import EarthQuakeUrl from './Tools/EarthQuakeUrl';
+import { matchColorToMag } from './Tools/magnitudeColors';
 import { Grid, Row, Col } from 'react-flexbox-grid';
-import QuakeList from '../src/Components/QuakeList';
-import SearchBar from '../src/Components/SearchBar';
+import QuakeList from './Components/QuakeList';
+import SearchBar from './Components/SearchBar';
+import QuakeContext from './Context/QuakeContext';
+import SeachContext from './Context/SearchContext';
 import '@material/react-button/dist/button.min.css';
-import UserLocation from '../src/Components/UserLocation';
+import UserLocation from './Components/UserLocation';
+import { initState, AppReducer } from './Reducers/AppReducer';
 import '../src/fonts.css';
 import '../src/App.css';
-import { isFor } from '@babel/types';
 
-class App extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			currLocation: null,
-			viewport: {
-				latitude: 45.4221,
-				longitude: -75.6903,
-				width: '100%',
-				height: '100vh',
-				zoom: 2
-			},
-			fetchedData: [],
-			selectedQuake: null,
-			selectedRegion: null
-		};
-		this.url =
-			'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-05-13&latitude=35.3400127&longitude=25.1343475&maxradiuskm=500';
+function App() {
 
-		this.ClusterMarker = ({ longitude, latitude, pointCount }) => (
-			<Marker longitude={longitude} latitude={latitude}>
-				<div className="cluster-marker">{pointCount}</div>
-			</Marker>
-		);
-	}
+  const [ state, dispatch ] = useReducer(AppReducer, initState);
+  const[ fetchedData,setFetchedData] = useState([]);
 
-	updateUserLocation = (currLocation) => {
-		this.setState({ currLocation: currLocation });
-	};
+	const ClusterMarker = ({ longitude, latitude, pointCount }) => (
+		<Marker longitude={longitude} latitude={latitude}>
+			<div className="cluster-marker">{pointCount}</div>
+		</Marker>
+  );
 
-	updateSelectedQuake = (quake) => {
-		this.setState({ selectedQuake: quake });
-	};
+	// useEffect(() => {
+	// 	let myUrl = new EarthQuakeUrl({
+	// 		starttime: '2019-05-13',
+	// 		latitude: 35.34,
+	// 		longitude: 25.13,
+	// 		maxradiuskm: 500
+	// 	});
 
-	updateViewPort = (viewport) => {
-		this.setState({ viewport: viewport });
-	};
-	selectRegion = (item) => {
-		this.setState({ selectedRegion: item });
-	};
+	// 	fetch(myUrl.getUrl()).then((response) => response.json()).then((data) => {
+  //     console.log(data);
+  //     setFetchedData(data.features);
+	// 	});
+	// }, []);
 
-	updateFetchedData = (item) => {
-		this.setState({ fetchedData: item });
-	};
 
-	componentDidMount() {
-		fetch(this.url).then((response) => response.json()).then((data) => {
-			console.log(data);
-			this.setState({ fetchedData: data.features });
-		});
-	}
-	matchColorToMag = (mag) => {
-		return magnitudeColors.filter((item) => {
-			return item.minValue <= mag && item.maxValue > mag;
-		});
-	};
+	return (
+		<Grid fluid>
+			<ReactMapGL
+				latitude={state.viewport.latitude}
+				longitude={state.viewport.longitude}
+				zoom={state.viewport.zoom}
+				style={{ width: '100%', height: '100vh' }}
+				accessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+				mapStyle="mapbox://styles/elefcodes/cjvz1805a00cq1clmiekbyx1p"
+				onViewportChange={(viewport) => {
+          dispatch({ type: 'UPDATED_VIEWPORT', payload: viewport })
+        }}
+			>
+				{state.currLocation != null ? (
+					<Marker latitude={state.currLocation.latitude} longitude={state.currLocation.longitude}>
+						<div className="marker-btn mylocation" />
+					</Marker>
+				) : null}
 
-	render() {
-		return (
-			<Grid fluid>
-				<ReactMapGL
-					latitude={this.state.viewport.latitude}
-					longitude={this.state.viewport.longitude}
-					zoom={this.state.viewport.zoom}
-					style={{ width: '100%', height: '100vh' }}
-					accessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-					mapStyle="mapbox://styles/elefcodes/cjvz1805a00cq1clmiekbyx1p"
-					onViewportChange={(viewport) => {
-						this.setState({ viewport: viewport });
-					}}
-				>
-					{this.state.currLocation != null ? (
+				<Cluster raduis={40} extent={512} nodeSize={64} component={ClusterMarker}>
+					{fetchedData.map((quake) => (
 						<Marker
-							latitude={this.state.currLocation.latitude}
-							longitude={this.state.currLocation.longitude}
+							key={quake.id}
+							latitude={quake.geometry.coordinates[1]}
+							longitude={quake.geometry.coordinates[0]}
 						>
-							<div className="marker-btn mylocation" />
+							<div
+								className="marker-btn"
+								style={{
+									backgroundColor: matchColorToMag(quake.properties.mag)[0]
+										? matchColorToMag(quake.properties.mag)[0].color
+										: '#333'
+								}}
+								onClick={(e) => {
+									e.preventDefault();
+									dispatch({ type: 'UPDATED_SELECTED_QUAKE', payload: quake });
+								}}
+							/>
 						</Marker>
-					) : null}
+					))}
+				</Cluster>
 
-					<Cluster radius={40} extent={512} nodeSize={64} component={this.ClusterMarker}>
-						{this.state.fetchedData.map((quake) => (
-							<Marker
-								key={quake.id}
-								latitude={quake.geometry.coordinates[1]}
-								longitude={quake.geometry.coordinates[0]}
-							>
-								<div
-									className="marker-btn"
-									style={{
-										backgroundColor: this.matchColorToMag(quake.properties.mag)[0]
-											? this.matchColorToMag(quake.properties.mag)[0].color
-											: '#333'
-									}}
-									onClick={(e) => {
-										e.preventDefault();
-										this.setState({ selectedQuake: quake });
-									}}
-								/>
-							</Marker>
-						))}
-					</Cluster>
+				{state.selectedQuake && (
+					<Popup
+						latitude={state.selectedQuake.geometry.coordinates[1]}
+						longitude={state.selectedQuake.geometry.coordinates[0]}
+						onClose={() => {
+							dispatch({ type: 'UPDATED_SELECTED_QUAKE', payload: null });
+						}}
+					>
+						<div>{state.selectedQuake.properties.title}</div>
+					</Popup>
+				)}
 
-					{this.state.selectedQuake && (
-						<Popup
-							latitude={this.state.selectedQuake.geometry.coordinates[1]}
-							longitude={this.state.selectedQuake.geometry.coordinates[0]}
-							onClose={() => {
-								this.setState({ selectedQuake: null });
+				<NavigationControl showCompass showZoom position="bottom-left" />
+
+				<Row>
+					<Col xs={9} md={9} sm={7}>
+          <SeachContext.Provider value={{
+            dispatch:dispatch,
+            setFetchedData:setFetchedData,
+            viewport:state.viewport
+          }}>
+						<SearchBar/>
+          </SeachContext.Provider>
+					</Col>
+					<Col xs={3} md={3} sm={5}>
+						<UserLocation dispatch={dispatch} viewport={state.viewport} />
+						<QuakeContext.Provider
+							value={{
+								dispatch: dispatch,
+								viewport: state.viewport,
+								currLocation: state.currLocation,
+								quakes: fetchedData
 							}}
 						>
-							<div>{this.state.selectedQuake.properties.title}</div>
-						</Popup>
-					)}
-					<NavigationControl showCompass showZoom position="bottom-left" />
-					<Row>
-						<Col xs={9} md={9} sm={7}>
-							<SearchBar
-								updateFetchedData={this.updateFetchedData}
-								updateSelectedRegion={this.selectRegion}
-								updateViewPort={this.updateViewPort}
-								viewport={this.state.viewport}
-							/>
-						</Col>
-						<Col xs={3} md={3} sm={5}>
-							<UserLocation
-								updateViewPort={this.updateViewPort}
-								updateUserLocation={this.updateUserLocation}
-							/>
-							<QuakeList
-								updateSelectedQuake={this.updateSelectedQuake}
-								featureList={this.state.fetchedData}
-								viewport={this.state.viewport}
-								updateViewPort={this.updateViewPort}
-								quakes={this.state.fetchedData}
-								currLocation={this.state.currLocation}
-							/>
-						</Col>
-					</Row>
-				</ReactMapGL>
-			</Grid>
-		);
-	}
+							<QuakeList />
+						</QuakeContext.Provider>
+					</Col>
+				</Row>
+
+			</ReactMapGL>
+		</Grid>
+	);
 }
 
 export default App;
