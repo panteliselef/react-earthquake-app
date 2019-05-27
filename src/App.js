@@ -1,3 +1,5 @@
+//TODO: add support for localStorage
+//TODO: Add url parameter
 import React, { useReducer, useEffect,useState } from 'react';
 import ReactMapGL, { Marker, Popup, NavigationControl } from '@urbica/react-map-gl';
 import Cluster from '@urbica/react-map-gl-cluster';
@@ -13,6 +15,7 @@ import UserLocation from './Components/UserLocation';
 import { initState, AppReducer } from './Reducers/AppReducer';
 import '../src/fonts.css';
 import '../src/App.css';
+import ToastStack from './Components/ToastStack';
 
 function App() {
 
@@ -101,10 +104,12 @@ function App() {
           <SeachContext.Provider value={{
             dispatch:dispatch,
             setFetchedData:setFetchedData,
-            viewport:state.viewport
+            viewport:state.viewport,
+						downloadingData: state.downloadingData,
           }}>
 						<SearchBar/>
           </SeachContext.Provider>
+						<ToastStack dispatch={dispatch} toasts={state.toasts}/>
 					</Col>
 					<Col xs={3} md={3} sm={5}>
 						<UserLocation dispatch={dispatch} viewport={state.viewport} />
@@ -113,7 +118,8 @@ function App() {
 								dispatch: dispatch,
 								viewport: state.viewport,
 								currLocation: state.currLocation,
-								quakes: fetchedData
+								quakes: fetchedData,
+								downloadingData:state.downloadingData
 							}}
 						>
 							<QuakeList />

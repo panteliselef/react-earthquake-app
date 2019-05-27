@@ -4,7 +4,7 @@ import SearchContext from '../Context/SearchContext';
 import EarthQuakeUrl from '../Tools/EarthQuakeUrl';
 function SearchBar(props) {
 	const [ suggestions, setSuggestions ] = useState([]);
-	const { dispatch, viewport, setFetchedData } = useContext(SearchContext);
+	const { dispatch, viewport, setFetchedData, downloadingData } = useContext(SearchContext);
 
 	const onUserInput = (e) => {
 		getEarlierDate(30);
@@ -38,6 +38,11 @@ function SearchBar(props) {
 		console.log('Selected:', selectedPlace);
 
 		dispatch({
+			type: 'TOGGLE_DATA_DOWNLOADING',
+			payload: true
+		});
+
+		dispatch({
 			type: 'UPDATED_VIEWPORT',
 			payload: {
 				...viewport,
@@ -56,12 +61,18 @@ function SearchBar(props) {
 			limit: 50,
 			orderby: 'time'
 		});
+
 		fetch(url.getUrl())
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
 
 				setFetchedData(data.features);
+				console.log(downloadingData);
+				dispatch({
+					type: 'TOGGLE_DATA_DOWNLOADING',
+					payload: false
+				});
 			})
 			.catch((error) => console.error(error));
 

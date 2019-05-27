@@ -1,4 +1,3 @@
-//TODO: add support for localStorage
 import React, { Component } from 'react';
 import ReactMapGL, { Marker, Popup, NavigationControl } from '@urbica/react-map-gl';
 import Cluster from '@urbica/react-map-gl-cluster';

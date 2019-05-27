@@ -9,6 +9,7 @@
     "dotenv": "^8.0.0",
     "mapbox-gl": "^1.0.0",
     "react": "^16.8.6",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.8.6",
     "react-flexbox-grid": "^2.1.2",
     "react-map-gl": "^4.1.2",

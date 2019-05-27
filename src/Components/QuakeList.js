@@ -1,16 +1,19 @@
-import React, {useContext}from 'react';
+import React, {useContext,useRef}from 'react';
 import QuakeItem from '../Components/QuakeItem';
 import QuakeContext from '../Context/QuakeContext';
 
 function QuakeList(props) {
-	const {quakes} = useContext(QuakeContext);
+	const {quakes,downloadingData} = useContext(QuakeContext);
 	return (
 		<ul className="quakelist">
-			{quakes.map((quake) => {
+		{(downloadingData)
+			? "loading"
+			: quakes.map((quake) => {
 				return (
 					<QuakeItem key={quake.id} quake={quake}/>
 				);
-			})}
+			})
+		}
 		</ul>
 	);
 }
