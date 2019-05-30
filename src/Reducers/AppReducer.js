@@ -25,7 +25,7 @@ const type = {
 };
 
 export const AppReducer = (state, action) => {
-	console.log("Action",action);
+	console.log("Action",action.type,action.payload);
 	console.log("State",state);
 	switch (action.type) {
 		case type.UPDATED_VIEWPORT: {
@@ -63,12 +63,6 @@ export const AppReducer = (state, action) => {
 				...state,
 				downloadingData: action.payload,
 			}
-		}
-		case type.PUSHED_TOAST: {
-			return {
-				...state,
-				toasts: action.payload
-			};
 		}
 		default:
 			return {...state}

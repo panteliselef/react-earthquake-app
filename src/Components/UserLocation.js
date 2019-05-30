@@ -2,11 +2,21 @@ import React, { useState } from 'react';
 const UserLocation = (props) => {
 	const { dispatch, viewport } = props;
 	const [ isEnable, setEnable ] = useState(false);
-	const changeColor = (e) => {
-		document.getElementById('locationText').style.display = 'inline';
-		getLocation();
-	};
 
+		
+	const toggleLocation = () => {
+		if(isEnable) {
+			setEnable(false);
+			document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#c3c3c3');
+			dispatch({type:'UPDATED_USER_LOCATION',payload:null});
+			
+		}else {
+			setEnable(true);
+			document.getElementById('locationText').style.display = 'inline';
+			document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill','#35B4F6');
+			getLocation();
+		}
+	}
 	const getLocation = () => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition((position) => {
@@ -22,14 +32,6 @@ const UserLocation = (props) => {
 						zoom: 7
 					}
 				});
-
-				if (isEnable) {
-					setEnable(false);
-					document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#c3c3c3');
-				} else {
-					setEnable(true);
-					document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#35B4F6');
-				}
 			});
 		} else {
 			console.error('Geolocation is not supported');
@@ -37,7 +39,7 @@ const UserLocation = (props) => {
 	};
 
 	return (
-		<div onClick={(e) => changeColor(e)} className="user-location">
+		<div onClick={(e) => toggleLocation(e)} className="user-location">
 			<div>
 				Use my Location{' '}
 				<span id="locationText" className="loading">

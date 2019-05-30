@@ -22,8 +22,9 @@ function QuakeItem(props) {
 			}
 		});
 	};
-
+	
 	return (
+		(properties.mag>=0.0) &&(
 		<li id={quake.id}>
 			<div className="myGrid">
 				<div
@@ -75,7 +76,7 @@ function QuakeItem(props) {
 					</Button>
 				</div>
 			</div>
-		</li>
+		</li>)
 	);
 }
 
