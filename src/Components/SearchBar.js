@@ -2,10 +2,9 @@ import React, { useState, useContext } from 'react';
 import { Row, Col } from 'react-flexbox-grid';
 import SearchContext from '../Context/SearchContext';
 import EarthQuakeUrl from '../Tools/EarthQuakeUrl';
-import { Link } from 'react-router-dom';
 function SearchBar(props) {
 	const [ suggestions, setSuggestions ] = useState([]);
-	const { dispatch, viewport, setFetchedData, downloadingData, toasts } = useContext(SearchContext);
+	const { dispatch, viewport, setFetchedData, toasts } = useContext(SearchContext);
 
 	const suggestionsRef = React.createRef();
 
@@ -19,13 +18,11 @@ function SearchBar(props) {
 			)
 				.then((response) => response.json())
 				.then((data) => {
-					console.log(data.features);
 					setSuggestions(data.features);
 				});
 		} else {
 			setSuggestions([]);
 		}
-		console.log(e.target.value);
 	};
 
 	const getEarlierDate = (numOfDays) => {
@@ -34,10 +31,8 @@ function SearchBar(props) {
 		return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
 	};
 	const selectPlace = (e,selectedPlace) => {
-		console.log("ID",selectedPlace.id);
-		onBlur();
+		setSuggestions([]);
 		e.target.parentElement.previousSibling.value = selectedPlace.matching_place_name || selectedPlace.place_name;
-		console.log('Selected:', selectedPlace);
 
 		dispatch({
 			type: 'TOGGLE_DATA_DOWNLOADING',
@@ -67,7 +62,6 @@ function SearchBar(props) {
 		fetch(url.getUrl())
 			.then((response) => response.json())
 			.then((data) => {
-				console.log('DATA', data);
 
 				if (data.features.length === 0) {
 					dispatch({
@@ -94,22 +88,20 @@ function SearchBar(props) {
 	};
 
 	const onBlur = (e) => {
-		console.log(suggestionsRef.current);
-		console.log(suggestionsRef.current.style);
-		suggestionsRef.current.style.visibility = 'hidden';
+		suggestionsRef.current.style.opacity = '0';
 	};
 
 	const onFocus = (e) => {
-		suggestionsRef.current.style.visibility = 'visible';
+		suggestionsRef.current.style.opacity = '1';
 	};
 	return (
 		<Row>
-			<Col xsOffset={2} sm={10} smOffset={1} mdOffset={2} md={8} xs={8}>
+			<Col xsOffset={2} sm={10} smOffset={1} mdOffset={9} md={3} xs={8}>
 				<div id="search-container" className="search-bar-container">
 					<input
 						id="search-field"
 						onFocus={(e) => onFocus(e)}
-						// onBlur={(e) => onBlur(e)}
+						onBlur={(e) => onBlur(e)}
 						type="search"
 						onInput={(e) => onUserInput(e)}
 						placeholder="Search something"

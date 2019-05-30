@@ -3,25 +3,22 @@ const UserLocation = (props) => {
 	const { dispatch, viewport } = props;
 	const [ isEnable, setEnable ] = useState(false);
 
-		
 	const toggleLocation = () => {
-		if(isEnable) {
+		if (isEnable) {
 			setEnable(false);
 			document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#c3c3c3');
-			dispatch({type:'UPDATED_USER_LOCATION',payload:null});
-			
-		}else {
+			dispatch({ type: 'UPDATED_USER_LOCATION', payload: null });
+		} else {
 			setEnable(true);
 			document.getElementById('locationText').style.display = 'inline';
-			document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill','#35B4F6');
+			document.getElementsByClassName('location-icon')[0].children[0].setAttribute('fill', '#35B4F6');
 			getLocation();
 		}
-	}
+	};
 	const getLocation = () => {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition((position) => {
 				document.getElementById('locationText').style.display = 'none';
-				console.log(position.coords);
 				dispatch({ type: 'UPDATED_USER_LOCATION', payload: position.coords });
 				dispatch({
 					type: 'UPDATED_VIEWPORT',
@@ -46,10 +43,12 @@ const UserLocation = (props) => {
 					loading...
 				</span>{' '}
 			</div>
-			<svg className="location-icon" style={{ width: '24px', height: '24px' }} viewBox="0 0 30 30">
+			<svg className="location-icon" style={{ width: '20px', height: '20px' }} viewBox="0 0 20 20">
 				<path
 					fill="#c3c3c3"
-					d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z"
+					d="M10,6.36363636 C12.0083082,6.36363636 13.6363636,7.99169182 13.6363636,10 C13.6363636,12.0083082 12.0083082,13.6363636 10,13.6363636 C7.99169182,13.6363636 6.36363636,12.0083082 6.36363636,10 C6.36363636,7.99169182 7.99169182,6.36363636 10,6.36363636 Z M1.86363636,10.9090909 L0,10.9090909 L0,9.09090909 L1.86363636,9.09090909 C2.27272727,5.3 5.3,2.27272727 9.09090909,1.86363636 L9.09090909,0 L10.9090909,0 L10.9090909,1.86363636 C14.7,2.27272727 17.7272727,5.3 18.1363636,9.09090909 L20,9.09090909 L20,10.9090909 L18.1363636,10.9090909 C17.7272727,14.7 14.7,17.7272727 10.9090909,18.1363636 L10.9090909,20 L9.09090909,20 L9.09090909,18.1363636 C5.3,17.7272727 2.27272727,14.7 1.86363636,10.9090909 Z M10,3.63636364 C6.48546068,3.63636364 3.63636364,6.48546068 3.63636364,10 C3.63636364,13.5145393 6.48546068,16.3636364 10,16.3636364 C13.5145393,16.3636364 16.3636364,13.5145393 16.3636364,10 C16.3636364,6.48546068 13.5145393,3.63636364 10,3.63636364 Z"
+					id="Shape"
+				/>
 				/>
 			</svg>
 		</div>

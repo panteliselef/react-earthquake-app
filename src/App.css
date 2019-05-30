@@ -120,9 +120,9 @@ div.user-location {
 	display: flex;
 	justify-content: space-between;
 	background-color: #fff;
-	/* padding: 1em 1em; */
 	margin: 0.5em;
 	border-radius: 0.4em;
+	border-radius: 1.5em;
 	margin-top: 1em;
 	margin-right: 1.5em;
 	box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
@@ -132,9 +132,7 @@ div.user-location {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-}
-div.user-location {
-	padding: 1em;
+	padding: .8em 2em;
 }
 
 div.user-location span.loading {
@@ -149,7 +147,8 @@ ul.quakelist {
 	font-family: 'Product Sans';
 	padding: 0;
 	margin: 0;
-	margin-top: -0.5em;
+	padding-top: 1.5em;
+	margin-top: -2em;
 	margin-right: 1em;
 	list-style: none;
 	padding-bottom: 1em;
@@ -312,7 +311,7 @@ ul.toast-stack {
 	bottom: 0;
 	left: 50%;
 	margin: 0;
-	margin-left: -250px;
+	margin-left: -150px;
 	padding: 0;
 	list-style: none;
 	font-size: 1rem;
@@ -402,4 +401,16 @@ li.animated-item {
 	min-width: 4em;
 	border: 1px solid #fff;
 	border-radius: 0.3em;
+}
+
+@media screen and (max-width:767px){
+	.mobile-view {
+		margin-top: 100%;
+	}
+	div.user-location {
+		margin-right: .5em;
+	}
+	ul.quakelist{
+		margin-right: 0;
+	}
 }

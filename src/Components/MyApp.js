@@ -1,4 +1,5 @@
 //TODO: Add url parameter
+// TODO: show error when cannot get location
 import React, { useReducer, useEffect, useState } from 'react';
 import ReactMapGL, { Marker, Popup, NavigationControl } from '@urbica/react-map-gl';
 import Cluster from '@urbica/react-map-gl-cluster';
@@ -6,7 +7,7 @@ import { matchColorToMag } from '../Tools/magnitudeColors';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import QuakeList from './QuakeList';
 import SearchBar from './SearchBar';
-import QuakeContext from '../Context/QuakeContext';
+import QuakeContext from '../Context/QuakeContext'; 
 import SeachContext from '../Context/SearchContext';
 import '@material/react-button/dist/button.min.css';
 import UserLocation from './UserLocation';
@@ -30,28 +31,14 @@ function MyApp(props) {
 	setInterval(() => {
 		if (navigator.onLine) {
 			setAppIsOffline(false);
-			// console.warn('ONLINE');
 		} else {
 			setAppIsOffline(true);
-			// console.warn('Offline');
 		}
 	}, 5000);
 
-	useEffect(() => {
-		if (navigator.onLine) {
-			setAppIsOffline(false);
-			console.warn('ONLINE');
-		} else {
-			setAppIsOffline(true);
-			console.warn('Offline');
-		}
-  });
-  
   useEffect(()=>{
-    console.log(props.location);
     const query = new URLSearchParams(props.location.search);
-    console.log(query.get("region"));
-  },[])
+  },[props.location])
 	// useEffect(() => {
 	// 	let myUrl = new EarthQuakeUrl({
 	// 		starttime: '2019-05-13',
@@ -61,7 +48,7 @@ function MyApp(props) {
 	// 	});
 
 	// 	fetch(myUrl.getUrl()).then((response) => response.json()).then((data) => {
-	//     console.log(data);
+
 	//     setFetchedData(data.features);
 	// 	});
 	// }, []);
@@ -131,7 +118,7 @@ function MyApp(props) {
 				)}
 
 				<Row>
-					<Col xs={9} md={9} sm={7}>
+					<Col xsOffset={0} xs={12} md={9} smOffset={1} mdOffset={0} sm={10}>
 						<SeachContext.Provider
 							value={{
 								dispatch: dispatch,
@@ -145,19 +132,22 @@ function MyApp(props) {
 						</SeachContext.Provider>
 						<ToastStack dispatch={dispatch} toasts={state.toasts} />
 					</Col>
-					<Col xs={3} md={3} sm={5}>
-						<UserLocation dispatch={dispatch} viewport={state.viewport} />
-						<QuakeContext.Provider
-							value={{
-								dispatch: dispatch,
-								viewport: state.viewport,
-								currLocation: state.currLocation,
-								quakes: fetchedData,
-								downloadingData: state.downloadingData
-							}}
-						>
-							<QuakeList />
-						</QuakeContext.Provider>
+					<Col xsOffset={1} xs={10} mdOffset={0} md={3} smOffset={2} sm={8}>
+						<div className="mobile-view">
+							<UserLocation dispatch={dispatch} viewport={state.viewport} />
+							<QuakeContext.Provider
+								value={{
+									dispatch: dispatch,
+									viewport: state.viewport,
+									currLocation: state.currLocation,
+									quakes: fetchedData,
+									downloadingData: state.downloadingData
+								}}
+							>
+								<QuakeList />
+							</QuakeContext.Provider>
+
+						</div>
 					</Col>
 				</Row>
 			</ReactMapGL>
