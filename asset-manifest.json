@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/static/css/main.b4a29635.chunk.css",
-    "main.js": "/static/js/main.b7ab3891.chunk.js",
-    "main.js.map": "/static/js/main.b7ab3891.chunk.js.map",
-    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
-    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-    "static/css/2.50ee3336.chunk.css": "/static/css/2.50ee3336.chunk.css",
-    "static/js/2.83e5fed8.chunk.js": "/static/js/2.83e5fed8.chunk.js",
-    "static/js/2.83e5fed8.chunk.js.map": "/static/js/2.83e5fed8.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.4e84598c8eee456d7f8c6cdc0b477667.js": "/precache-manifest.4e84598c8eee456d7f8c6cdc0b477667.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.50ee3336.chunk.css.map": "/static/css/2.50ee3336.chunk.css.map",
-    "static/css/main.b4a29635.chunk.css.map": "/static/css/main.b4a29635.chunk.css.map",
-    "static/media/crosshairs-gps.svg": "/static/media/crosshairs-gps.27b7eeac.svg"
+    "main.css": "/react-earthquake-app/static/css/main.b4a29635.chunk.css",
+    "main.js": "/react-earthquake-app/static/js/main.bd074070.chunk.js",
+    "main.js.map": "/react-earthquake-app/static/js/main.bd074070.chunk.js.map",
+    "runtime~main.js": "/react-earthquake-app/static/js/runtime~main.1aa69457.js",
+    "runtime~main.js.map": "/react-earthquake-app/static/js/runtime~main.1aa69457.js.map",
+    "static/css/2.50ee3336.chunk.css": "/react-earthquake-app/static/css/2.50ee3336.chunk.css",
+    "static/js/2.83e5fed8.chunk.js": "/react-earthquake-app/static/js/2.83e5fed8.chunk.js",
+    "static/js/2.83e5fed8.chunk.js.map": "/react-earthquake-app/static/js/2.83e5fed8.chunk.js.map",
+    "index.html": "/react-earthquake-app/index.html",
+    "precache-manifest.6b8ff3d09543f050d9d4cdf2b90eab81.js": "/react-earthquake-app/precache-manifest.6b8ff3d09543f050d9d4cdf2b90eab81.js",
+    "service-worker.js": "/react-earthquake-app/service-worker.js",
+    "static/css/2.50ee3336.chunk.css.map": "/react-earthquake-app/static/css/2.50ee3336.chunk.css.map",
+    "static/css/main.b4a29635.chunk.css.map": "/react-earthquake-app/static/css/main.b4a29635.chunk.css.map",
+    "static/media/crosshairs-gps.svg": "/react-earthquake-app/static/media/crosshairs-gps.27b7eeac.svg"
   }
 }
