@@ -12,6 +12,7 @@ export const initState = {
 	selectedRegion: null,
 	toasts: [],
 	downloadingData: false,
+	queryObject: {}
 };
 
 const type = {
@@ -19,9 +20,9 @@ const type = {
 	UPDATED_SELECTED_QUAKE: 'UPDATED_SELECTED_QUAKE',
 	UPDATED_SELECTED_REGION: 'UPDATED_SELECTED_REGION',
 	UPDATED_USER_LOCATION: 'UPDATED_USER_LOCATION',
-	PUSHED_TOAST: 'PUSHED_TOAST',
 	UPDATED_TOAST_STACK: 'UPDATED_TOAST_STACK',
 	TOGGLE_DATA_DOWNLOADING: 'TOGGLE_DATA_DOWNLOADING',
+	UPDATED_QUERY_OBJECT: 'UPDATED_QUERY_OBJECT'
 };
 
 export const AppReducer = (state, action) => {
@@ -62,6 +63,12 @@ export const AppReducer = (state, action) => {
 			return {
 				...state,
 				downloadingData: action.payload,
+			}
+		}
+		case type.UPDATED_QUERY_OBJECT: {
+			return {
+				...state,
+				queryObject: action.payload
 			}
 		}
 		default:

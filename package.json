@@ -1,24 +1,18 @@
 {
   "name": "quakes",
   "version": "0.1.0",
-  "homepage":"https://panteliselef.github.io/react-earthquake-app/",
+  "homepage": "https://panteliselef.github.io/react-earthquake-app/",
   "private": true,
   "dependencies": {
     "@material/react-button": "^0.12.1",
     "@urbica/react-map-gl": "^1.6.0",
     "@urbica/react-map-gl-cluster": "^0.1.0",
-    "dotenv": "^8.0.0",
     "mapbox-gl": "^1.0.0",
     "react": "^16.8.6",
-    "react-addons-css-transition-group": "^15.6.2",
-    "react-dom": "^16.8.6",
     "react-flexbox-grid": "^2.1.2",
-    "react-map-gl": "^4.1.2",
-    "react-router": "^5.0.0",
+    "react-helmet": "^5.2.1",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "3.0.1",
-    "shortid": "^2.2.14",
-    "supercluster": "^6.0.1"
+    "react-scripts": "3.0.1"
   },
   "devDependencies": {
     "gh-pages": "^2.0.1"
@@ -28,8 +22,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy":"npm run build",
-    "deploy" :"gh-pages -d build"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"

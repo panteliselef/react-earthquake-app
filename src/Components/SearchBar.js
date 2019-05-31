@@ -1,12 +1,21 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Row, Col } from 'react-flexbox-grid';
 import SearchContext from '../Context/SearchContext';
-import EarthQuakeUrl from '../Tools/EarthQuakeUrl';
+import { withRouter } from 'react-router-dom';
+import {getEarlierDate} from '../Tools/Utils';
 function SearchBar(props) {
 	const [ suggestions, setSuggestions ] = useState([]);
-	const { dispatch, viewport, setFetchedData, toasts } = useContext(SearchContext);
+	const { dispatch, queryObject } = useContext(SearchContext);
 
 	const suggestionsRef = React.createRef();
+	const searchInputRef = React.createRef();
+
+	useEffect(
+		() => {
+			searchInputRef.current.value = queryObject.place_name || "";
+		},
+		[]
+	);
 
 	const onUserInput = (e) => {
 		getEarlierDate(30);
@@ -25,66 +34,15 @@ function SearchBar(props) {
 		}
 	};
 
-	const getEarlierDate = (numOfDays) => {
-		const today = new Date();
-		today.setDate(today.getDate() - numOfDays);
-		return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-	};
-	const selectPlace = (e,selectedPlace) => {
+	const selectPlace = (e, selectedPlace) => {
 		setSuggestions([]);
 		e.target.parentElement.previousSibling.value = selectedPlace.matching_place_name || selectedPlace.place_name;
-
-		dispatch({
-			type: 'TOGGLE_DATA_DOWNLOADING',
-			payload: true
-		});
-
-		dispatch({
-			type: 'UPDATED_VIEWPORT',
-			payload: {
-				...viewport,
-				longitude: selectedPlace.center[0] + 4,
-				latitude: selectedPlace.center[1],
-				zoom: 6
-			}
-		});
-
-		const url = new EarthQuakeUrl({
-			starttime: getEarlierDate(30),
-			minlatitude: selectedPlace.bbox[1],
-			minlongitude: selectedPlace.bbox[0],
-			maxlatitude: selectedPlace.bbox[3],
-			maxlongitude: selectedPlace.bbox[2],
-			limit: 50,
-			orderby: 'time'
-		});
-
-		fetch(url.getUrl())
-			.then((response) => response.json())
-			.then((data) => {
-
-				if (data.features.length === 0) {
-					dispatch({
-						type: 'UPDATED_TOAST_STACK',
-						payload: [
-							...toasts,
-							{
-								timestame: new Date(),
-								type: "toast",
-								value: 'No earthquakes found'
-							}
-						]
-					});
-				}
-				setFetchedData(data.features);
-				dispatch({
-					type: 'TOGGLE_DATA_DOWNLOADING',
-					payload: false
-				});
-			})
-			.catch((error) => console.error(error));
-
-		dispatch({ type: 'UPDATED_SELECTED_REGION', payload: selectedPlace});
+		props.history.push(
+			`?&place_name=${selectedPlace.matching_place_name || selectedPlace.place_name}&mnlat=${selectedPlace
+				.bbox[1]}&mnlon=${selectedPlace.bbox[0]}&mxlat=${selectedPlace.bbox[3]}&mxlon=${selectedPlace
+				.bbox[2]}&clon=${selectedPlace.center[0]}&clat=${selectedPlace.center[1]}`
+		);
+		dispatch({ type: 'UPDATED_SELECTED_REGION', payload: selectedPlace });
 	};
 
 	const onBlur = (e) => {
@@ -99,6 +57,7 @@ function SearchBar(props) {
 			<Col xsOffset={2} sm={10} smOffset={1} mdOffset={9} md={3} xs={8}>
 				<div id="search-container" className="search-bar-container">
 					<input
+						ref={searchInputRef}
 						id="search-field"
 						onFocus={(e) => onFocus(e)}
 						onBlur={(e) => onBlur(e)}
@@ -109,9 +68,9 @@ function SearchBar(props) {
 					<div id="search-bar-suggestion" ref={suggestionsRef} className="search-bar-suggestions">
 						{suggestions.map((sug) => {
 							return (
-									<div onClick={(e) => selectPlace(e,sug)} key={sug.id} id={sug.id}>
-										{sug.matching_place_name || sug.place_name}
-									</div>
+								<div onClick={(e) => selectPlace(e, sug)} key={sug.id} id={sug.id}>
+									{sug.matching_place_name || sug.place_name}
+								</div>
 							);
 						})}
 					</div>
@@ -120,5 +79,4 @@ function SearchBar(props) {
 		</Row>
 	);
 }
-
-export default SearchBar;
+export default withRouter(SearchBar);

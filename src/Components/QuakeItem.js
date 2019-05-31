@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import QuakeContext from '../Context/QuakeContext';
-import { matchColorToMag, hexToRgb } from '../Tools/magnitudeColors';
-import distanceInKmBetweenEarthCoordinates from '../Tools/DegreesToRadians';
+import { distanceInKmBetweenEarthCoordinates, matchColorToMag,hexToRgb} from '../Tools/Utils';
 import locationIcon from '../Images/crosshairs-gps.svg';
 import Button from '@material/react-button';
 function QuakeItem(props) {

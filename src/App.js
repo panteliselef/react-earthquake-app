@@ -2,12 +2,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import MyApp from '../src/Components/MyApp';
+import MetaTags from './Components/MetaTags';
 
 function App() {
 	return (
-		<Router>
-			<Route path="/" component={MyApp} />
-		</Router>
+		<>
+			<MetaTags/>
+			<Router>
+				<Route path="/" component={MyApp} />
+			</Router>
+		</>
 	);
 }
 

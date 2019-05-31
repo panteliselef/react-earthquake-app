@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 const UserLocation = (props) => {
-	const { dispatch, viewport } = props;
+	const { dispatch, viewport, toasts } = props;
 	const [ isEnable, setEnable ] = useState(false);
 
 	const toggleLocation = () => {
@@ -15,23 +15,68 @@ const UserLocation = (props) => {
 			getLocation();
 		}
 	};
+
 	const getLocation = () => {
 		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition((position) => {
-				document.getElementById('locationText').style.display = 'none';
-				dispatch({ type: 'UPDATED_USER_LOCATION', payload: position.coords });
-				dispatch({
-					type: 'UPDATED_VIEWPORT',
-					payload: {
-						...viewport,
-						latitude: position.coords.latitude,
-						longitude: position.coords.longitude,
-						zoom: 7
+			navigator.geolocation.getCurrentPosition(
+				function success(position) {
+					document.getElementById('locationText').style.display = 'none';
+					dispatch({ type: 'UPDATED_USER_LOCATION', payload: position.coords });
+					dispatch({
+						type: 'UPDATED_VIEWPORT',
+						payload: {
+							...viewport,
+							latitude: position.coords.latitude,
+							longitude: position.coords.longitude,
+							zoom: 7
+						}
+					});
+				},
+				function error(error) {
+					let errorMsg;
+					switch (error.code) {
+						case error.PERMISSION_DENIED:
+							errorMsg = 'User denied the request for Geolocation.';
+							break;
+						case error.POSITION_UNAVAILABLE:
+							errorMsg = 'Location information is unavailable.';
+							break;
+						case error.TIMEOUT:
+							errorMsg = 'The request to get user location timed out.';
+							break;
+						case error.UNKNOWN_ERROR:
+							errorMsg = 'An unknown error occurred.';
+							break;
+						default:
+							errorMsg = 'An unknown error occurred.';
+							break;
 					}
-				});
-			});
+					dispatch({
+						type: 'UPDATED_TOAST_STACK',
+						payload: [
+							...toasts,
+							{
+								timestamp: new Date(),
+								type: 'toast',
+								value: errorMsg
+							}
+						]
+					});
+					document.getElementById('locationText').style.display = 'none';
+				}
+			);
 		} else {
-			console.error('Geolocation is not supported');
+			dispatch({
+				type: 'UPDATED_TOAST_STACK',
+				payload: [
+					...toasts,
+					{
+						timestamp: new Date(),
+						type: 'toast',
+						value: 'Geolocation is not supported'
+					}
+				]
+			});
 		}
 	};
 
